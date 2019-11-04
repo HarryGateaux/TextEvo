@@ -26,7 +26,6 @@ public class Phenotype {
 		
 		phenotype = parentPhenotype;
 		letters = parentPhenotype.ToCharArray ();
-		mutate ();
 
 	}
 
@@ -39,14 +38,10 @@ public class Phenotype {
 			float rando = UnityEngine.Random.Range (0f, 1f); 
 			//
 			//mutates based on the pctChance
-				if( rando < pctChance) {
-				if (rando < pctChance / 2) {
-
-					letters [i] = (char)(letters [i] - 1);
-				} else {
-
-					letters [i] = (char)(letters [i] + 1);
-				}
+			if( rando < pctChance) {
+				
+					int rando2 = UnityEngine.Random.Range(97, 122);
+					letters [i] = (char)(rando2);
 
 			}
 		}
@@ -54,14 +49,13 @@ public class Phenotype {
 		phenotype = new string (letters);
 	}
 
-	public string crossOver(string partner){
+	//combines the phenotype with another and crosses over
+	public void crossOver(string partner){
 
-		int crossoverPt = UnityEngine.Random.Range (0, phenotype.Length);
-
-		string crossedString = phenotype.Substring (0, crossoverPt) + partner.Substring (crossoverPt, partner.Length);
-
-		return crossedString;
-
+		int crossoverPt = UnityEngine.Random.Range (0, partner.Length);
+		string crossedString = phenotype.Substring (0, crossoverPt) + partner.Substring (crossoverPt, partner.Length - crossoverPt);
+		phenotype = crossedString;
+		mutate ();
 	}
 
 	public int fitness(string targetString){

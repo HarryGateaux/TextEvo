@@ -37,19 +37,23 @@ public class Population {
 
 	}
 
-	public void newGeneration(Phenotype[] pool){
+	public void newGeneration(List<Phenotype> poolNew){
 
 		phenotypes = new Phenotype[pop];
 		fitnesses = new int[pop];
 
 		for (int i = 0; i < pop; i++) {
 
-			//pick a random item from the first five of the top 5
-			int rando = UnityEngine.Random.Range (0, 5); 
-			string parentString = pool[rando].ToString ();
+			//pick a random item from the pool which is populated weighted by fitness
+			int rando = UnityEngine.Random.Range (0, poolNew.Count); 
+			int randoPart = UnityEngine.Random.Range (0, poolNew.Count); 
 
+			string parentString = poolNew[rando].ToString ();
+			string partnerString = poolNew[randoPart].ToString ();
 
 			phenotypes [i] = new Phenotype (parentString);
+			phenotypes [i].crossOver (partnerString);
+
 			fitnesses [i] = phenotypes [i].fitness (targetString);
 		}
 
@@ -67,36 +71,54 @@ public class Population {
 
 	}
 
+
+
 	//returns an array with frequency of the top 3 fitnesses weighted by occurence
-	public Phenotype[] matingPool(){
+	public List<Phenotype> matingPool(){
 
 		Phenotype[] top3 = new Phenotype[3];
 		Phenotype[] pool = new Phenotype[100];
+		List<Phenotype> poolNew = new List<Phenotype>();
 
 		Array.Sort (fitnesses, phenotypes);
 		Array.Reverse (fitnesses);
 		Array.Reverse (phenotypes);
 		Array.Copy (phenotypes, top3, 3);
 
-		int sumFitnesses = fitnesses [0] + fitnesses [1] + fitnesses [2];
-
-		for (int i = 0; i < pool.Length; i++) {
-			
-			int rando = UnityEngine.Random.Range (0, sumFitnesses);
-			if (rando < fitnesses [0]) { 
-				pool [i] = top3 [0];
-			} else if (rando < fitnesses [0] + fitnesses [1]) {
-				pool [i] = top3 [0];
-			} else if (rando < fitnesses [0] + fitnesses [1] + fitnesses [2]) {
-				pool [i] = top3 [0];
-			} else if (sumFitnesses == 0) {
-				pool [i] = top3 [0];
-			};
-
+		//adds each phenotype to the list based on its fitness
+		for (int i = 0; i < phenotypes.Length; i++) {
+			for (int j = 0; j < fitnesses [i]; j++) {
+				poolNew.Add (phenotypes [i]);
+			}
 		}
 
+//		int sumFitnesses = fitnesses [0] + fitnesses [1] + fitnesses [2];
+//
+//		for (int i = 0; i < pool.Length; i++) {
+//			
+//			int rando = UnityEngine.Random.Range (0, sumFitnesses);
+//			if (rando < fitnesses [0]) { 
+//				pool [i] = top3 [0];
+//			} else if (rando < fitnesses [0] + fitnesses [1]) {
+//				pool [i] = top3 [1];
+//			} else if (rando < fitnesses [0] + fitnesses [1] + fitnesses [2]) {
+//				pool [i] = top3 [2];
+//			} else if (sumFitnesses == 0) {
+//				pool [i] = top3 [0];
+//			};
+//
+//		}
+
 		Debug.Log ("top 3 fitnesses " + fitnesses [0].ToString() + " " +  fitnesses [1].ToString() + " " +  fitnesses [2].ToString());
-		return pool;
+
+		string output = "top 3 phenotypes " ;
+
+		for (int i = 0; i < 10; i++) {
+			output += " " + i + " : " + phenotypes [i].ToString ();
+		}
+
+		Debug.Log (output);
+		return poolNew;
 
 	}
 }
