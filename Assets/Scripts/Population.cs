@@ -7,26 +7,27 @@ using System;
 public class Population {
 
 	public string selectionType;
-	public string mutationType;
-	public string crossoverType;
+	public string mutationType = "randomChoice";
+	public string crossoverType = "OnePt";
 	public string targetString;
 	public string name;
 
 	public int generation = 0;
 	public int maxFitness;
-	private int size;
+	public int size;
 
-	public float mutateRate = 0.1f;
+	public float mutationRate = 0.1f;
 
 	public Phenotype[] phenotypes;
 	public int[] fitnesses;
 
 
 	//class that defines population
-	public Population(int _size){
+	public Population(int _size, string _selectionType){
 
 		targetString = "helloworld";
 		size = _size;
+		selectionType = _selectionType;
 		Seed ();
 	}
 
@@ -61,7 +62,7 @@ public class Population {
 
 		string top3fit = String.Format ("{0} Population : Generation {1} : Top 3 Fitnesses {2}, {3}, {4}", name, generation, fitnesses [0].ToString (), fitnesses [1].ToString (), fitnesses [2].ToString ());
 		
-		string top5pheno = String.Format("{0} Population : Generation  {1} : Top 5 Phenotypes ", name, generation);
+		string top5pheno = String.Format("{0} Population : Generation  {1} : Top 5 phenotypes ", name, generation);
 
 		for (int i = 0; i < 5; i++) {
 			top5pheno += " " + i + " - " + phenotypes [i].ToString ();
@@ -92,20 +93,15 @@ public class Population {
 
 		List<Phenotype> selectionPool = new List<Phenotype>();
 
-		//overwrite to new empty objects
-		//phenotypes = new Phenotype[size];
-		//fitnesses = new int[size];
-
 		switch (type) 
 		{
 
 		//choose sample of size n from the population, and places the highest fitness one in the selection pool
 		case "tournament":
 			
-			int n = 2; //2 seems to be the standard in literature
-
 			for (int i = 0; i < size; i++) {
-				
+
+				//choose two values (n = 2)
 				int r = UnityEngine.Random.Range (0, size); 
 				int r2 = UnityEngine.Random.Range (0, size); 
 				Phenotype best = fitnesses [r] >= fitnesses [r2] ? phenotypes [r] : phenotypes [r2];
@@ -157,29 +153,31 @@ public class Population {
 	//generates the next generation
 	public void NextGen(){
 
-		List<Phenotype> selectionPool = Selection ("tournament");
+		List<Phenotype> selectionPool = Selection (selectionType);
 
 		phenotypes = new Phenotype[size];
 		fitnesses = new int[size];
 
-		for (int i = 0; i < size; i++) {
+		for (int i = 0; i < size; i += 2) {
 
-			//pick a random item from the pool which is populated weighted by fitness
-			int randPart = UnityEngine.Random.Range (0, selectionPool.Count); 
+			//pick a random item from the pool to breed with i
+			int randPartner = UnityEngine.Random.Range (0, selectionPool.Count); 
 
-			string parentString = selectionPool[i].ToString ();
-			string partnerString = selectionPool[randPart].ToString ();
+			//add the two new children to the new phenotypes for this generation
+			phenotypes [i] = new Phenotype (selectionPool [i].phenotype);
+			phenotypes [i + 1] = new Phenotype (selectionPool [i].phenotype);
 
-			phenotypes [i] = new Phenotype (parentString);
-			phenotypes [i].Evolve (partnerString, mutateRate);
+			//evolve them
+			Evolution.Evolve (phenotypes [i], phenotypes [i + 1], mutationRate, crossoverType, mutationType);
 
+			//add their fitnesses to the new fitnesses for this generation
 			fitnesses [i] = phenotypes [i].Fitness (targetString);
+			fitnesses [i + 1] = phenotypes [i + 1].Fitness (targetString);
 		}
-
+			
 		generation++;
 
 	}
-
 		
 	public override string ToString ()
 	{

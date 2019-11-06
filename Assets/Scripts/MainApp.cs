@@ -20,16 +20,16 @@ public class MainApp : MonoBehaviour {
 		enable = false;
 
 		pops = new Population[5];
-		string[] nameStrings = new string[5] { "First", "Second", "Third", "Fourth", "ifth" };
+		string[] nameStrings = new string[5] { "First", "Second", "Third", "Fourth", "FSifth" };
 
 		for (int i = 0; i < 5; i++) {
 
-			pops [i] = new Population (popSize);
+			pops [i] = new Population (popSize, "stochasticUniversalSampling");
 			pops [i].name = nameStrings [i];
 
 		}
 		Debug.Log ("Generation is : " + pops[0].generation);
-		Phenotype p = new Phenotype (10);
+
 
 	}
 
@@ -51,7 +51,6 @@ public class MainApp : MonoBehaviour {
 		}
 
 		textInstance.text = finalOutput;
-
 
 	}
 }
