@@ -24,3 +24,9 @@ public class Button : MonoBehaviour {
 	}
 		
 }
+
+
+//to do
+
+//implement selection algorithms
+//implement phenotype > genotype mapping

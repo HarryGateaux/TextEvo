@@ -6,14 +6,21 @@ using System;
 
 public class Population {
 
-	public string name;
-	public Phenotype[] phenotypes;
-	public int[] fitnesses;
+	public string selectionType;
+	public string mutationType;
+	public string crossoverType;
 	public string targetString;
+	public string name;
+
 	public int generation = 0;
 	public int maxFitness;
 	private int size;
+
 	public float mutateRate = 0.1f;
+
+	public Phenotype[] phenotypes;
+	public int[] fitnesses;
+
 
 	//class that defines population
 	public Population(int _size){
@@ -44,43 +51,113 @@ public class Population {
 		int maxIdx = fitnesses.ToList ().IndexOf (maxFitness);
 		return phenotypes[maxIdx].phenotype;
 	}
-		
-	//returns an array with frequency of the top 3 fitnesses weighted by occurence i.e cdf
-	public List<Phenotype> Selection(){
 
-		Phenotype[] top3 = new Phenotype[3];
-		Phenotype[] pool = new Phenotype[100];
-		List<Phenotype> poolNew = new List<Phenotype>();
+	//sorts the phenotypes and fitness by fitness descending order
+	public void SortByFitness(){
 
 		Array.Sort (fitnesses, phenotypes);
 		Array.Reverse (fitnesses);
 		Array.Reverse (phenotypes);
-		Array.Copy (phenotypes, top3, 3);
 
-		//adds each phenotype to the list based on its fitness
+		string top3fit = String.Format ("{0} Population : Generation {1} : Top 3 Fitnesses {2}, {3}, {4}", name, generation, fitnesses [0].ToString (), fitnesses [1].ToString (), fitnesses [2].ToString ());
+		
+		string top5pheno = String.Format("{0} Population : Generation  {1} : Top 5 Phenotypes ", name, generation);
+
+		for (int i = 0; i < 5; i++) {
+			top5pheno += " " + i + " - " + phenotypes [i].ToString ();
+		}
+
+		Debug.Log (top3fit);
+		Debug.Log (top5pheno);
+			
+	}
+
+	//create fitness proportionate pool of potential breeding partners (similar to unscaled CDF)
+	public List<Phenotype> Cdf(){
+
+		List<Phenotype> cdf = new List<Phenotype>();
+
 		for (int i = 0; i < phenotypes.Length; i++) {
 			for (int j = 0; j < fitnesses [i]; j++) {
-				poolNew.Add (phenotypes [i]);
+				cdf.Add (phenotypes [i]);
 			}
 		}
+		return cdf;
+	}
+		
+	//returns an array with frequency of the top 3 fitnesses weighted by occurence i.e cdf
+	public List<Phenotype> Selection(string type){
 
-		Debug.Log ("top 3 fitnesses " + fitnesses [0].ToString() + " " +  fitnesses [1].ToString() + " " +  fitnesses [2].ToString());
+		SortByFitness ();
 
-		string output = "top 10 phenotypes " ;
+		List<Phenotype> selectionPool = new List<Phenotype>();
 
-		for (int i = 0; i < 10; i++) {
-			output += " " + i + " : " + phenotypes [i].ToString ();
+		//overwrite to new empty objects
+		//phenotypes = new Phenotype[size];
+		//fitnesses = new int[size];
+
+		switch (type) 
+		{
+
+		//choose sample of size n from the population, and places the highest fitness one in the selection pool
+		case "tournament":
+			
+			int n = 2; //2 seems to be the standard in literature
+
+			for (int i = 0; i < size; i++) {
+				
+				int r = UnityEngine.Random.Range (0, size); 
+				int r2 = UnityEngine.Random.Range (0, size); 
+				Phenotype best = fitnesses [r] >= fitnesses [r2] ? phenotypes [r] : phenotypes [r2];
+				selectionPool.Add(best);
+			}
+
+			break;
+
+		//random selection of breeding phenotypes from the cdf
+		case "fitnessProportional":
+			
+			List<Phenotype> cdf = Cdf ();
+
+			for (int i = 0; i < size; i++) {
+				int r = UnityEngine.Random.Range (0, cdf.Count); 
+				selectionPool.Add(cdf[r]);
+			}
+			break;
+
+		//step through the cdf in steps of cdf.count / size, and picks random item in each step range
+		case "stochasticUniversalSampling":
+
+			cdf = Cdf ();
+
+
+			for (int i = 0; i < size; i++) {
+				int r = UnityEngine.Random.Range ((cdf.Count / size) * i, (cdf.Count / size) * (i + 1)); 
+				selectionPool.Add( cdf [r]);
+			}
+			break;
+		
+		//takes the top 5 by fitness and then fills the selection pool with size/5 of those
+		case "truncated":
+			
+			for (int i = 0; i < 5; i++) {
+				for (int j = 0; j < (size / 5); j++) {
+					//phenotypes is already ordered so it's fairly simple
+					selectionPool.Add( phenotypes[i]);
+				}
+			}
+			break;
+
 		}
 
-		Debug.Log (output);
-		return poolNew;
+		return selectionPool;
 
 	}
 
 	//generates the next generation
 	public void NextGen(){
 
-		List<Phenotype> poolNew = Selection ();
+		List<Phenotype> selectionPool = Selection ("tournament");
 
 		phenotypes = new Phenotype[size];
 		fitnesses = new int[size];
@@ -88,11 +165,10 @@ public class Population {
 		for (int i = 0; i < size; i++) {
 
 			//pick a random item from the pool which is populated weighted by fitness
-			int rando = UnityEngine.Random.Range (0, poolNew.Count); 
-			int randoPart = UnityEngine.Random.Range (0, poolNew.Count); 
+			int randPart = UnityEngine.Random.Range (0, selectionPool.Count); 
 
-			string parentString = poolNew[rando].ToString ();
-			string partnerString = poolNew[randoPart].ToString ();
+			string parentString = selectionPool[i].ToString ();
+			string partnerString = selectionPool[randPart].ToString ();
 
 			phenotypes [i] = new Phenotype (parentString);
 			phenotypes [i].Evolve (partnerString, mutateRate);

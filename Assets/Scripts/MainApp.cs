@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 
 public class MainApp : MonoBehaviour {
@@ -19,7 +20,7 @@ public class MainApp : MonoBehaviour {
 		enable = false;
 
 		pops = new Population[5];
-		string[] nameStrings = new string[5] { "first", "second", "third", "fourth", "fifth" };
+		string[] nameStrings = new string[5] { "First", "Second", "Third", "Fourth", "ifth" };
 
 		for (int i = 0; i < 5; i++) {
 
@@ -28,6 +29,8 @@ public class MainApp : MonoBehaviour {
 
 		}
 		Debug.Log ("Generation is : " + pops[0].generation);
+		Phenotype p = new Phenotype (10);
+
 	}
 
 
@@ -42,7 +45,7 @@ public class MainApp : MonoBehaviour {
 		for (int i = 0; i < 5; i++) {
 			finalOutput += pops [i].ToString ();
 
-			if (enable && pops[i].maxFitness < 8 && Time.frameCount < 10000) {
+			if (enable && pops[i].maxFitness < 10 && Time.frameCount < 10000) {
 				pops[i].NextGen ();
 			}
 		}

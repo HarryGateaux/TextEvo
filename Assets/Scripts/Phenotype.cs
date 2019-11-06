@@ -47,12 +47,11 @@ public class Phenotype {
 		case "randomChoice":
 
 			for (int i = 0; i < letters.Length; i++) {
-
 				//mutates based on the mutateRate
 				if( UnityEngine.Random.Range (0f, 1f) < mutateRate) {
 
-					int rando2 = UnityEngine.Random.Range(97, 122);
-					letters [i] = (char)(rando2);
+					int randomChoice = UnityEngine.Random.Range(97, 122);
+					letters [i] = (char)(randomChoice);
 
 				}
 			}
@@ -60,16 +59,24 @@ public class Phenotype {
 			break;
 
 		//if chosen, gene is tweaked up or down one index in the range
-		case "randomStep":
+		case "stepUp":
 
+			for (int i = 0; i < letters.Length; i++) {
+				//mutates based on the mutateRate
+				if( UnityEngine.Random.Range (0f, 1f) < mutateRate) {
 
-
-
-
+					int intLetter = Convert.ToInt32 (letters [i]);
+					intLetter = ((intLetter + 1) - 97) % (122 - 97);
+					letters [i] = (char)(intLetter + 97);
+				}
+			}
+				
 			break;
 
 		//if chosen, gene is tweaked by an amount determined by gaussian mean = 0 variance = sigma
 		case "gaussianConvolution":
+
+
 			break;
 
 		}
@@ -156,6 +163,18 @@ public class Phenotype {
 	public override string ToString()
 	{
 		return phenotype;
+	}
+
+	public double randDist(){
+
+		System.Random rand = new System.Random(); //reuse this if you are generating many
+		double u1 = 1.0-rand.NextDouble(); //uniform(0,1] random doubles
+		double u2 = 1.0-rand.NextDouble();
+		double randStdNormal = Math.Sqrt(-2.0 * Math.Log(u1)) *
+			Math.Sin(2.0 * Math.PI * u2); //random normal(0,1)
+		double randNormal =	0 + 1 * randStdNormal; //random normal(mean,stdDev^2)
+		
+		return randNormal;
 	}
 
 }
