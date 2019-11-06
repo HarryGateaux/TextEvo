@@ -1,19 +1,26 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class button : MonoBehaviour {
-
-	public TextControl txtControl;
-	public Population pop;
+public class Button : MonoBehaviour {
+	
+	public Text textButton; //this is assigned manually in GUI
+	public MainApp mainApp;
 
 	void Awake(){
-		txtControl = gameObject.GetComponent<TextControl> ();
+		mainApp = gameObject.GetComponent<MainApp> ();
 	}
 
 	public void OnClick(){
-		Debug.Log ("new generation..." + txtControl.population.generation);
-		txtControl.population.newGeneration (txtControl.population.matingPool());
+		
+		mainApp.enable = !mainApp.enable;
+
+		if (mainApp.enable == true) {
+			textButton.text = "Pause";
+		} else {
+			textButton.text = "Simulate";
+		}
 	}
 		
 }

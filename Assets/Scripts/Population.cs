@@ -6,75 +6,47 @@ using System;
 
 public class Population {
 
+	public string name;
 	public Phenotype[] phenotypes;
 	public int[] fitnesses;
-	private string targetString;
+	public string targetString;
 	public int generation = 0;
 	public int maxFitness;
-	private int pop;
+	private int size;
+	public float mutateRate = 0.1f;
 
 	//class that defines population
-	public Population(int popCount){
+	public Population(int _size){
 
 		targetString = "helloworld";
-		pop = popCount;
-		generate (popCount);
-
+		size = _size;
+		Seed ();
 	}
 
 	//creates first generation
-	public void generate(int popCount){
-		
-		phenotypes = new Phenotype[popCount];
-		fitnesses = new int[popCount];
+	public void Seed(){
 
-		for (int i = 0; i < popCount; i++) {
+		phenotypes = new Phenotype[size];
+		fitnesses = new int[size];
+
+		for (int i = 0; i < size; i++) {
 			phenotypes [i] = new Phenotype (targetString.Length);
-			fitnesses [i] = phenotypes [i].fitness (targetString);
+			fitnesses [i] = phenotypes [i].Fitness (targetString);
 		}
 
 		generation++;
-
 	}
 
-	public void newGeneration(List<Phenotype> poolNew){
-
-		phenotypes = new Phenotype[pop];
-		fitnesses = new int[pop];
-
-		for (int i = 0; i < pop; i++) {
-
-			//pick a random item from the pool which is populated weighted by fitness
-			int rando = UnityEngine.Random.Range (0, poolNew.Count); 
-			int randoPart = UnityEngine.Random.Range (0, poolNew.Count); 
-
-			string parentString = poolNew[rando].ToString ();
-			string partnerString = poolNew[randoPart].ToString ();
-
-			phenotypes [i] = new Phenotype (parentString);
-			phenotypes [i].crossOver (partnerString);
-
-			fitnesses [i] = phenotypes [i].fitness (targetString);
-		}
-
-		generation++;
-
-	}
-
-
-	//returns the phenotype with the highest fitness in the current generation
-	public string highestFitness(){
+	//returns the string with the highest fitness in the current generation
+	public string MostFit(){
 
 		maxFitness = fitnesses.Max ();
 		int maxIdx = fitnesses.ToList ().IndexOf (maxFitness);
 		return phenotypes[maxIdx].phenotype;
-
 	}
-
-
-
-	//returns an array with frequency of the top 3 fitnesses weighted by occurence
-	public List<Phenotype> matingPool(){
+		
+	//returns an array with frequency of the top 3 fitnesses weighted by occurence i.e cdf
+	public List<Phenotype> Selection(){
 
 		Phenotype[] top3 = new Phenotype[3];
 		Phenotype[] pool = new Phenotype[100];
@@ -92,26 +64,9 @@ public class Population {
 			}
 		}
 
-//		int sumFitnesses = fitnesses [0] + fitnesses [1] + fitnesses [2];
-//
-//		for (int i = 0; i < pool.Length; i++) {
-//			
-//			int rando = UnityEngine.Random.Range (0, sumFitnesses);
-//			if (rando < fitnesses [0]) { 
-//				pool [i] = top3 [0];
-//			} else if (rando < fitnesses [0] + fitnesses [1]) {
-//				pool [i] = top3 [1];
-//			} else if (rando < fitnesses [0] + fitnesses [1] + fitnesses [2]) {
-//				pool [i] = top3 [2];
-//			} else if (sumFitnesses == 0) {
-//				pool [i] = top3 [0];
-//			};
-//
-//		}
-
 		Debug.Log ("top 3 fitnesses " + fitnesses [0].ToString() + " " +  fitnesses [1].ToString() + " " +  fitnesses [2].ToString());
 
-		string output = "top 3 phenotypes " ;
+		string output = "top 10 phenotypes " ;
 
 		for (int i = 0; i < 10; i++) {
 			output += " " + i + " : " + phenotypes [i].ToString ();
@@ -120,5 +75,38 @@ public class Population {
 		Debug.Log (output);
 		return poolNew;
 
+	}
+
+	//generates the next generation
+	public void NextGen(){
+
+		List<Phenotype> poolNew = Selection ();
+
+		phenotypes = new Phenotype[size];
+		fitnesses = new int[size];
+
+		for (int i = 0; i < size; i++) {
+
+			//pick a random item from the pool which is populated weighted by fitness
+			int rando = UnityEngine.Random.Range (0, poolNew.Count); 
+			int randoPart = UnityEngine.Random.Range (0, poolNew.Count); 
+
+			string parentString = poolNew[rando].ToString ();
+			string partnerString = poolNew[randoPart].ToString ();
+
+			phenotypes [i] = new Phenotype (parentString);
+			phenotypes [i].Evolve (partnerString, mutateRate);
+
+			fitnesses [i] = phenotypes [i].Fitness (targetString);
+		}
+
+		generation++;
+
+	}
+
+		
+	public override string ToString ()
+	{
+		return (name + " : Generation  #" + generation.ToString () + "\n" + MostFit () + " has the highest fitness of " + maxFitness + "\n\n");
 	}
 }
