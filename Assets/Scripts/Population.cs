@@ -68,6 +68,7 @@ public class Population {
 			top5pheno += " " + i + " - " + phenotypes [i].ToString ();
 		}
 
+		//print out top candidates
 		Debug.Log (top3fit);
 		Debug.Log (top5pheno);
 			
@@ -87,11 +88,12 @@ public class Population {
 	}
 		
 	//returns an array with frequency of the top 3 fitnesses weighted by occurence i.e cdf
-	public List<Phenotype> Selection(string type){
+	public Stack<Phenotype> Selection(string type){
 
 		SortByFitness ();
 
-		List<Phenotype> selectionPool = new List<Phenotype>();
+		//List<Phenotype> selectionPool = new List<Phenotype>();
+		Stack<Phenotype> selectionPool = new Stack<Phenotype>();
 
 		switch (type) 
 		{
@@ -105,7 +107,7 @@ public class Population {
 				int r = UnityEngine.Random.Range (0, size); 
 				int r2 = UnityEngine.Random.Range (0, size); 
 				Phenotype best = fitnesses [r] >= fitnesses [r2] ? phenotypes [r] : phenotypes [r2];
-				selectionPool.Add(best);
+				selectionPool.Push(best);
 			}
 
 			break;
@@ -117,7 +119,7 @@ public class Population {
 
 			for (int i = 0; i < size; i++) {
 				int r = UnityEngine.Random.Range (0, cdf.Count); 
-				selectionPool.Add(cdf[r]);
+				selectionPool.Push(cdf[r]);
 			}
 			break;
 
@@ -129,7 +131,7 @@ public class Population {
 
 			for (int i = 0; i < size; i++) {
 				int r = UnityEngine.Random.Range ((cdf.Count / size) * i, (cdf.Count / size) * (i + 1)); 
-				selectionPool.Add( cdf [r]);
+				selectionPool.Push( cdf [r]);
 			}
 			break;
 		
@@ -139,33 +141,36 @@ public class Population {
 			for (int i = 0; i < 5; i++) {
 				for (int j = 0; j < (size / 5); j++) {
 					//phenotypes is already ordered so it's fairly simple
-					selectionPool.Add( phenotypes[i]);
+					selectionPool.Push( phenotypes[i]);
 				}
 			}
 			break;
 
 		}
 
+		//shuffle the selection pool
+		System.Random rand = new System.Random();
+		selectionPool = new Stack<Phenotype>(selectionPool.OrderBy (x => rand.Next ()));
+
 		return selectionPool;
 
 	}
 
-	//generates the next generation
+	//generates the next generation pool and evolves them
 	public void NextGen(){
 
-		List<Phenotype> selectionPool = Selection (selectionType);
+		Stack<Phenotype> selectionPool = Selection (selectionType);
 
 		phenotypes = new Phenotype[size];
 		fitnesses = new int[size];
 
+		//loop over pairs, as need two parents per two children
 		for (int i = 0; i < size; i += 2) {
 
-			//pick a random item from the pool to breed with i
-			int randPartner = UnityEngine.Random.Range (0, selectionPool.Count); 
+			//add the two new children to the new phenotypes for this generation (have been shuffled previously)
 
-			//add the two new children to the new phenotypes for this generation
-			phenotypes [i] = new Phenotype (selectionPool [i].phenotype);
-			phenotypes [i + 1] = new Phenotype (selectionPool [i].phenotype);
+			phenotypes [i] = new Phenotype (selectionPool.Pop().phenotype);
+			phenotypes [i + 1] = new Phenotype (selectionPool.Pop().phenotype);
 
 			//evolve them
 			Evolution.Evolve (phenotypes [i], phenotypes [i + 1], mutationRate, crossoverType, mutationType);

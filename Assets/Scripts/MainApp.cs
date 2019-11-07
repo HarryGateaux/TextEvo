@@ -9,7 +9,8 @@ public class MainApp : MonoBehaviour {
 
 	private Text textInstance;
 	public Population[] pops;
-	private int popSize;
+	public List<Population> populations;
+	public int popSize;
 	public bool enable;
 
 	// Use this for initialization
@@ -19,17 +20,8 @@ public class MainApp : MonoBehaviour {
 		popSize = 100;
 		enable = false;
 
-		pops = new Population[5];
-		string[] nameStrings = new string[5] { "First", "Second", "Third", "Fourth", "FSifth" };
-
-		for (int i = 0; i < 5; i++) {
-
-			pops [i] = new Population (popSize, "stochasticUniversalSampling");
-			pops [i].name = nameStrings [i];
-
-		}
-		Debug.Log ("Generation is : " + pops[0].generation);
-
+		populations = new List<Population> ();
+		enable = false;
 
 	}
 
@@ -42,11 +34,11 @@ public class MainApp : MonoBehaviour {
 	void Update () {
 
 		string finalOutput = "";
-		for (int i = 0; i < 5; i++) {
-			finalOutput += pops [i].ToString ();
+		for (int i = 0; i < populations.Count; i++) {
+			finalOutput += populations [i].ToString ();
 
-			if (enable && pops[i].maxFitness < 10 && Time.frameCount < 10000) {
-				pops[i].NextGen ();
+			if (enable && populations[i].maxFitness < 10 && Time.frameCount < 10000) {
+				populations[i].NextGen ();
 			}
 		}
 

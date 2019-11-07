@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class Button : MonoBehaviour {
+public class SimulateButton : MonoBehaviour {
 	
 	public Text textButton; //this is assigned manually in GUI
 	public MainApp mainApp;
