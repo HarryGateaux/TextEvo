@@ -25,8 +25,3 @@ public class SimulateButton : MonoBehaviour {
 		
 }
 
-
-//to do
-
-//implement selection algorithms
-//implement phenotype > genotype mapping

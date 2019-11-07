@@ -186,6 +186,11 @@ public class Population {
 		
 	public override string ToString ()
 	{
-		return (name + " : Generation  #" + generation.ToString () + "\n" + MostFit () + " has the highest fitness of " + maxFitness + "\n\n");
+		string output = String.Format ("Population {0} / Selection : {1} , Crossover : {2}, Mutation : {3} \n " +
+		                "   Generation  # {4} {5} has the highest fitness of {6} \n\n", name, selectionType, crossoverType, mutationType, generation.ToString (), MostFit (), maxFitness);
+
+		return output;
+
+
 	}
 }

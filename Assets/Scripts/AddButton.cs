@@ -5,22 +5,32 @@ using UnityEngine;
 public class AddButton : MonoBehaviour {
 
 	public MainApp mainApp;
+	public DropSelection dSelect;
+	public DropMutation dMutate;
+	public DropCrossover dCross;
 	private int maxPops = 5;
 
+
 	void Awake(){
+		
 		mainApp = gameObject.GetComponent<MainApp> ();
+		dSelect = gameObject.GetComponent<DropSelection>();
+		dMutate = gameObject.GetComponent<DropMutation>();
+		dCross = gameObject.GetComponent<DropCrossover>();
 	}
 
 
 	public void OnClick(){
+		
 		//create a new population on click
 
-		string[] nameStrings = new string[5] { "First", "Second", "Third", "Fourth", "Fifth" };
+		Debug.Log (dSelect);
 
 		//less than not less than or equal to because it's not been added yet
 		if (mainApp.populations.Count < maxPops) {
 
-			mainApp.populations.Add (new Population (mainApp.popSize, "stochasticUniversalSampling") { name = nameStrings [mainApp.populations.Count] });
+			mainApp.populations.Add (new Population (mainApp.popSize, "truncated" ) { name = (mainApp.populations.Count + 1).ToString() });
+
 
 		} else {
 

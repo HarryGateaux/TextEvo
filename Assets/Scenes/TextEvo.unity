@@ -332,6 +332,7 @@ GameObject:
   m_Component:
   - component: {fileID: 220685881}
   - component: {fileID: 220685884}
+  - component: {fileID: 220685885}
   - component: {fileID: 220685883}
   - component: {fileID: 220685882}
   m_Layer: 5
@@ -359,7 +360,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 85}
+  m_AnchoredPosition: {x: -310, y: -35}
   m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &220685882
@@ -452,6 +453,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 220685880}
+--- !u!114 &220685885
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 220685880}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e8756feae189e74409b22d4bf43dd9cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dd: {fileID: 0}
+  choice: 
 --- !u!1 &225281766
 GameObject:
   m_ObjectHideFlags: 0
@@ -740,7 +754,7 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: OnePt
@@ -759,6 +773,7 @@ GameObject:
   m_Component:
   - component: {fileID: 438312143}
   - component: {fileID: 438312146}
+  - component: {fileID: 438312147}
   - component: {fileID: 438312145}
   - component: {fileID: 438312144}
   m_Layer: 5
@@ -786,7 +801,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 55}
+  m_AnchoredPosition: {x: -310, y: -65}
   m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &438312144
@@ -877,6 +892,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 438312142}
+--- !u!114 &438312147
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 438312142}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 22268c7140d07e749a3d9dc9da38a8ec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dd: {fileID: 0}
+  choice: 
 --- !u!1 &453169231
 GameObject:
   m_ObjectHideFlags: 0
@@ -2203,6 +2231,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1044462937}
   - component: {fileID: 1044462940}
+  - component: {fileID: 1044462941}
   - component: {fileID: 1044462939}
   - component: {fileID: 1044462938}
   m_Layer: 5
@@ -2230,7 +2259,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -150, y: 25}
+  m_AnchoredPosition: {x: -310, y: -95}
   m_SizeDelta: {x: 100, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1044462938
@@ -2321,6 +2350,19 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1044462936}
+--- !u!114 &1044462941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1044462936}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 631218178414f7c4db016a7f4f49272d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  dd: {fileID: 0}
+  choice: 
 --- !u!1 &1045385876
 GameObject:
   m_ObjectHideFlags: 0
@@ -3143,7 +3185,7 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: randomChoice
@@ -3217,7 +3259,7 @@ MonoBehaviour:
     m_Alignment: 4
     m_AlignByGeometry: 0
     m_RichText: 1
-    m_HorizontalOverflow: 0
+    m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
   m_Text: tournament
@@ -3452,7 +3494,7 @@ RectTransform:
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 400, y: 200}
+  m_SizeDelta: {x: 600, y: 250}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1724108372
 MonoBehaviour:
@@ -3499,7 +3541,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: New Text
+  m_Text: 
 --- !u!222 &1724108374
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3531,6 +3573,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mainApp: {fileID: 0}
+  dSelect: {fileID: 0}
+  dMutate: {fileID: 0}
+  dCross: {fileID: 0}
 --- !u!1 &1776575572
 GameObject:
   m_ObjectHideFlags: 0
