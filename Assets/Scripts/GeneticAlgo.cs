@@ -136,6 +136,8 @@ public class Selection
         var genomes = p._genomes;
         var fitnesses = p._fitnesses;
 
+        List<Genome> cdf;
+
         switch (_selectionType)
         {
 
@@ -157,7 +159,7 @@ public class Selection
             //random selection of breeding genomes from the cdf
             case "fitnessProportional":
 
-                List<Genome> cdf = Cdf(genomes, fitnesses);
+                cdf = Cdf(genomes, fitnesses);
 
                 for (int i = 0; i < size; i++)
                 {
@@ -170,7 +172,6 @@ public class Selection
             case "stochasticUniversalSampling":
 
                 cdf = Cdf(genomes, fitnesses);
-
 
                 for (int i = 0; i < size; i++)
                 {
@@ -393,8 +394,8 @@ public class GeneticAlgo
 
     public Population Population
     {
-        get  {return _population;}
-        set  {_population = value;}
+        get { return _population; }
+        set { _population = value; }
     }
 
     public GeneticAlgo(Fitness fitness, Population population, Selection selection, CrossOver crossover, Mutation mutation)
@@ -415,7 +416,7 @@ public class GeneticAlgo
         var childrenMutated = _mutation.Apply(childrenCrossed);
 
         Population = childrenMutated;
-        
+
         Population._generation++;
 
     }
@@ -423,11 +424,27 @@ public class GeneticAlgo
     public override string ToString()
     {
         string output = String.Format("Population {0} / Selection : {1} , Crossover : {2}, Mutation : {3} \n " +
-                        "   Generation  # {4} {5} has the highest fitness of {6} \n\n", Population._name,
+                        "<Size=18>Generation  # {4} {5} : Highest Fitness = <color=#000000>{6} </color> </size>\n\n", Population._name,
                         _selection._selectionType, _crossover._crossoverType, _mutation._mutationType,
                         Population._generation.ToString(), Population._bestGenome, Population._bestFitness);
 
         return output;
 
     }
+
+    public string CompleteString()
+    {
+        string output = String.Format("Population {0} / Selection : {1} , Crossover : {2}, Mutation : {3} \n " +
+                 "<Size=18>Generation  # {4} {5} <color=#000000>EVOLVED! </color></size>\n\n", Population._name,
+                 _selection._selectionType, _crossover._crossoverType, _mutation._mutationType,
+                 Population._generation.ToString(), Population._bestGenome, Population._bestFitness);
+
+        return output;
+
+
+
+    }
+
+
 }
+

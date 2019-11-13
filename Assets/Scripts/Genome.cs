@@ -22,10 +22,11 @@ public class Genome {
         //generate a new random genome with genes a-z
         for (int i = 0; i < length; i++)
         {
+            //issue here with timing and random being same
             int randInt = randomInt.Next(97, 122);
             genes[i] = (char)randInt;
+            
         }
-   
         genome = new string(genes);
     }
 

@@ -38,41 +38,61 @@ public class GuiSetup : MonoBehaviour {
 		if (geneticAlgos.Count < maxPops) {
 
             Fitness fitness = new Fitness("helloworld");
-            Population population = new Population(popSize, fitness._targetString);
+            Population population = new Population(popSize, fitness._targetString) { _name = (geneticAlgos.Count + 1).ToString() } ;
             Selection selection = new Selection(selectType);
             CrossOver crossover = new CrossOver(crossType);
             Mutation mutation = new Mutation(mutateType);
 
-            geneticAlgos.Add (new GeneticAlgo(fitness, population, selection, crossover, mutation) {_name = (geneticAlgos.Count + 1).ToString() });
+            geneticAlgos.Add (new GeneticAlgo(fitness, population, selection, crossover, mutation));
 		} else {
 
 			Debug.Log ("Population Limit Reached : 5 is the Maximum Number of geneticAlgos");
 		}
 	}
 
-	public void OnClickSimulate(){
+    public void OnClickReset()
+    {
+        geneticAlgos = new List<GeneticAlgo>();
+        Debug.Log("Populations Reset to 0");
+
+    }
+
+    public void OnClickExit()
+    {
+        Application.Quit();
+    }
+
+    public void OnClickSimulate(){
 
 		enable = !enable;
 
 		if (enable == true) {
-			textSimulate.text = "Pause";
+			textSimulate.text = "<Color=#ff0000ff>Pause</color>" ;
 		} else {
 			textSimulate.text = "Simulate";
 		}
 	}
-		
 	// Update is called once per frame
 	void Update () {
 
 		string finalOutput = "";
 
 		for (int i = 0; i < geneticAlgos.Count; i++) {
-			finalOutput += geneticAlgos [i].ToString ();
+
+            if (geneticAlgos[i].Population._bestFitness < 10) { 
+			    finalOutput += geneticAlgos [i].ToString ();
+            }
 
 			if (enable && geneticAlgos[i].Population._bestFitness < 10 && Time.frameCount < 10000) {
 				geneticAlgos[i].NextGeneration ();
 			}
+
+            else if(geneticAlgos[i].Population._bestFitness == 10){
+                finalOutput += geneticAlgos[i].CompleteString();
+            }
 		}
+
+
         
 		textOutput.text = finalOutput;
 	}
