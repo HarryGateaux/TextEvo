@@ -7,19 +7,18 @@ public class GuiSetup : MonoBehaviour {
 	private Text textSimulate, textTarget, textOutput;
 	private string targetString;
 	private Dropdown dSelect, dMutate, dCross;
-	private int maxPops = 5, popSize = 100;
+	private int maxPops = 5, popSize = 500;
 	private bool enable = false;
 	private List<GeneticAlgo> geneticAlgos;
 
 	void Awake(){
-
 		targetString = "helloworld";
 
 		textOutput = GetComponent<Text>();
 		textSimulate = GameObject.Find("TextSimulate").GetComponent<Text> ();
 		textTarget = GameObject.Find("TextTarget").GetComponent<Text> ();
 
-		textTarget.text = "Target String is \"" + targetString + "\"";	
+        textTarget.text = "Target String | <color=#000000>" + targetString +"</color>";	
 
 		dSelect = GameObject.Find("DropSelect").GetComponent<Dropdown>();
 		dMutate = GameObject.Find ("DropMutate").GetComponent<Dropdown>();
@@ -27,6 +26,7 @@ public class GuiSetup : MonoBehaviour {
 
 		geneticAlgos = new List<GeneticAlgo> ();
 
+        InvokeRepeating("UpdateAlgo", 0.0f, 0.07f);
     }
 
     public void OnClickAdd(){
@@ -37,7 +37,7 @@ public class GuiSetup : MonoBehaviour {
 
 		if (geneticAlgos.Count < maxPops) {
 
-            Fitness fitness = new Fitness("helloworld");
+            Fitness fitness = new Fitness(targetString);
             Population population = new Population(popSize, fitness._targetString) { _name = (geneticAlgos.Count + 1).ToString() } ;
             Selection selection = new Selection(selectType);
             CrossOver crossover = new CrossOver(crossType);
@@ -67,33 +67,31 @@ public class GuiSetup : MonoBehaviour {
 		enable = !enable;
 
 		if (enable == true) {
-			textSimulate.text = "<Color=#ff0000ff>Pause</color>" ;
+			textSimulate.text = "<Color=#000000>Pause</color>" ;
 		} else {
 			textSimulate.text = "Simulate";
 		}
 	}
 	// Update is called once per frame
-	void Update () {
+	void UpdateAlgo() {
 
 		string finalOutput = "";
 
 		for (int i = 0; i < geneticAlgos.Count; i++) {
 
-            if (geneticAlgos[i].Population._bestFitness < 10) { 
+            if (geneticAlgos[i].Population._bestFitness < targetString.Length) { 
 			    finalOutput += geneticAlgos [i].ToString ();
             }
 
-			if (enable && geneticAlgos[i].Population._bestFitness < 10 && Time.frameCount < 10000) {
+			if (enable && geneticAlgos[i].Population._bestFitness < targetString.Length && Time.frameCount < 10000) {
 				geneticAlgos[i].NextGeneration ();
 			}
 
-            else if(geneticAlgos[i].Population._bestFitness == 10){
+            else if(geneticAlgos[i].Population._bestFitness == targetString.Length)
+            {
                 finalOutput += geneticAlgos[i].CompleteString();
             }
 		}
-
-
-        
 		textOutput.text = finalOutput;
 	}
 }

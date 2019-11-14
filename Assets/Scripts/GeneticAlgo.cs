@@ -112,7 +112,7 @@ public class Selection
     {
         _selectionType = selectionType;
     }
-
+    //problem here if all have zero fitnesses as the CDF is blank!
     public List<Genome> Cdf(Genome[] genomes, int[] fitnesses)
     {
         List<Genome> cdf = new List<Genome>();
@@ -120,6 +120,15 @@ public class Selection
         for (int i = 0; i < genomes.Length; i++)
         {
             for (int j = 0; j < fitnesses[i]; j++)
+            {
+                cdf.Add(genomes[i]);
+            }
+        }
+
+        //if they all have zero fitness, just put one of each into the pool
+        if (cdf.Count == 0)
+        {
+            for (int i = 0; i < genomes.Length; i++)
             {
                 cdf.Add(genomes[i]);
             }
@@ -160,6 +169,7 @@ public class Selection
             case "fitnessProportional":
 
                 cdf = Cdf(genomes, fitnesses);
+                if(cdf.Count == 0) { Debug.Log("null cdf"); }
 
                 for (int i = 0; i < size; i++)
                 {
@@ -171,7 +181,9 @@ public class Selection
             //step through the cdf in steps of cdf.count / size, and picks random item in each step range
             case "stochasticUniversalSampling":
 
+
                 cdf = Cdf(genomes, fitnesses);
+                if (cdf.Count == 0) { Debug.Log("null cdf"); }
 
                 for (int i = 0; i < size; i++)
                 {
@@ -423,8 +435,8 @@ public class GeneticAlgo
 
     public override string ToString()
     {
-        string output = String.Format("Population {0} / Selection : {1} , Crossover : {2}, Mutation : {3} \n " +
-                        "<Size=18>Generation  # {4} {5} : Highest Fitness = <color=#000000>{6} </color> </size>\n\n", Population._name,
+        string output = String.Format("Population {0} : Selection : {1} Crossover : {2} Mutation : {3} \n " +
+                        "<Size=18>Generation {4} <color=#000000>{5}</color> : Fitness = <color=#000000>{6} </color> </size>\n\n", Population._name,
                         _selection._selectionType, _crossover._crossoverType, _mutation._mutationType,
                         Population._generation.ToString(), Population._bestGenome, Population._bestFitness);
 
@@ -434,8 +446,8 @@ public class GeneticAlgo
 
     public string CompleteString()
     {
-        string output = String.Format("Population {0} / Selection : {1} , Crossover : {2}, Mutation : {3} \n " +
-                 "<Size=18>Generation  # {4} {5} <color=#000000>EVOLVED! </color></size>\n\n", Population._name,
+        string output = String.Format("Population {0} : Selection : {1} Crossover : {2} Mutation : {3} \n " +
+                 "<Size=18>Generation  {4} <color=#000000>{5} EVOLVED! </color></size>\n\n", Population._name,
                  _selection._selectionType, _crossover._crossoverType, _mutation._mutationType,
                  Population._generation.ToString(), Population._bestGenome, Population._bestFitness);
 
